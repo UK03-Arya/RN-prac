@@ -22,6 +22,7 @@ const ParentComponent = () => {
         setCount((prev) => prev + 1);
     }, []); // Dependency array empty hai matlab ye function sirf ek baar banega
 
+    // test
     return (
         <View style={styles.container}>
             <Text style={styles.counterText}>Count: {count}</Text>
