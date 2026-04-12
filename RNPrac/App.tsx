@@ -1,56 +1,61 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, TextInput, FlatList } from 'react-native';
-import { useMemo, useState, useEffect } from 'react';
+import { StyleSheet, Text, View, TouchableOpacity, ScrollView, SafeAreaView } from 'react-native';
+import { useState } from 'react';
+
+import Counter from './components/Counter';
+import TodoList from './components/TodoList';
+import ApiFetch from './components/ApiFetch';
+import UserSearch from './components/UserSearch';
 
 export default function App() {
-  const [search, setSearch] = useState('');
-  const [timer, setTimer] = useState(0);
+  const [activeComponent, setActiveComponent] = useState('Menu');
 
-  // Maan lo ye hamara heavy data hai
-  const users = [
-    { id: 1, name: 'Babita' },
-    { id: 2, name: 'Arjun' },
-    { id: 3, name: 'Nitin' },
-    // ... hazaro users ho sakte hain
+  const components = [
+    { name: 'Counter', component: <Counter /> },
+    { name: 'TodoList', component: <TodoList /> },
+    { name: 'ApiFetch', component: <ApiFetch /> },
+    { name: 'UserSearch', component: <UserSearch /> },
   ];
 
-  // 1. Heavy Calculation (Optimization Point)
-  const filteredUsers = useMemo(() => {
-    console.log("Filtering users... (Heavy Task)");
-    return users.filter(user =>
-      user.name.toLowerCase().includes(search.toLowerCase())
-    );
-  }, [search]); // Sirf tab chalega jab 'search' change hoga
-
-  // 2. Timer (Jo har second re-render trigger karega)
-  useEffect(() => {
-    const interval = setInterval(() => setTimer(prev => prev + 1), 1000);
-    return () => clearInterval(interval);
-  }, []);
-
   return (
-    <View style={styles.container}>
-      <Text style={styles.timer}>Timer: {timer}s</Text>
+    <SafeAreaView style={styles.container}>
+      <View style={styles.header}>
+        <Text style={styles.headerText}>Practice App</Text>
+        {activeComponent !== 'Menu' && (
+          <TouchableOpacity onPress={() => setActiveComponent('Menu')}>
+            <Text style={styles.backButton}>Back to Menu</Text>
+          </TouchableOpacity>
+        )}
+      </View>
 
-      <TextInput
-        style={styles.input}
-        placeholder="Search users..."
-        value={search}
-        onChangeText={setSearch}
-      />
-
-      <FlatList
-        data={filteredUsers}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => <Text style={styles.item}>{item.name}</Text>}
-      />
-    </View>
+      <View style={styles.content}>
+        {activeComponent === 'Menu' ? (
+          <ScrollView>
+            {components.map((item, index) => (
+              <TouchableOpacity
+                key={index}
+                style={styles.menuItem}
+                onPress={() => setActiveComponent(item.name)}
+              >
+                <Text style={styles.menuItemText}>{item.name}</Text>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+        ) : (
+          components.find(c => c.name === activeComponent)?.component
+        )}
+      </View>
+      <StatusBar style="auto" />
+    </SafeAreaView>
   );
-};
+}
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 20, marginTop: 50 },
-  timer: { fontSize: 18, fontWeight: 'bold', color: 'red', marginBottom: 10 },
-  input: { borderWidth: 1, padding: 10, borderRadius: 8, marginBottom: 20 },
-  item: { padding: 10, borderBottomWidth: 0.5 }
+  container: { flex: 1, backgroundColor: '#f5f5f5', paddingTop: 40 },
+  header: { padding: 20, backgroundColor: '#fff', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', borderBottomWidth: 1, borderBottomColor: '#ddd' },
+  headerText: { fontSize: 20, fontWeight: 'bold' },
+  backButton: { color: '#007AFF', fontSize: 16 },
+  content: { flex: 1, padding: 15 },
+  menuItem: { padding: 20, backgroundColor: '#fff', marginVertical: 8, borderRadius: 10, alignItems: 'center', shadowColor: '#000', shadowOpacity: 0.1, shadowRadius: 5, elevation: 2 },
+  menuItemText: { fontSize: 18, fontWeight: '600', color: '#333' }
 });
