@@ -6,6 +6,7 @@ import Counter from './components/Counter';
 import TodoList from './components/TodoList';
 import ApiFetch from './components/ApiFetch';
 import UserSearch from './components/UserSearch';
+import Debounce from './components/Debounce';
 
 export default function App() {
   const [activeComponent, setActiveComponent] = useState('Menu');
@@ -15,6 +16,7 @@ export default function App() {
     { name: 'TodoList', component: <TodoList /> },
     { name: 'ApiFetch', component: <ApiFetch /> },
     { name: 'UserSearch', component: <UserSearch /> },
+    { name: 'Debounce', component: <Debounce /> },
   ];
 
   return (
