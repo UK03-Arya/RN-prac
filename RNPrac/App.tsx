@@ -7,6 +7,7 @@ import TodoList from './components/TodoList';
 import ApiFetch from './components/ApiFetch';
 import UserSearch from './components/UserSearch';
 import Debounce from './components/Debounce';
+import ThrottleScroll from './components/Throtling';
 
 export default function App() {
   const [activeComponent, setActiveComponent] = useState('Menu');
@@ -17,6 +18,7 @@ export default function App() {
     { name: 'ApiFetch', component: <ApiFetch /> },
     { name: 'UserSearch', component: <UserSearch /> },
     { name: 'Debounce', component: <Debounce /> },
+    { name: 'ThrottleScroll', component: <ThrottleScroll /> },
   ];
 
   return (
