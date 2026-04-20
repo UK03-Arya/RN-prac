@@ -8,6 +8,7 @@ import ApiFetch from './components/ApiFetch';
 import UserSearch from './components/UserSearch';
 import Debounce from './components/Debounce';
 import ThrottleScroll from './components/Throtling';
+import CustomHook from './components/CustomHook';
 
 export default function App() {
   const [activeComponent, setActiveComponent] = useState('Menu');
@@ -19,6 +20,7 @@ export default function App() {
     { name: 'UserSearch', component: <UserSearch /> },
     { name: 'Debounce', component: <Debounce /> },
     { name: 'ThrottleScroll', component: <ThrottleScroll /> },
+    { name: 'CustomHook', component: <CustomHook /> },
   ];
 
   return (
