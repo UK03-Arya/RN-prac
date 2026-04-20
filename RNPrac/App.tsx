@@ -22,7 +22,7 @@ export default function App() {
     { name: 'ThrottleScroll', component: <ThrottleScroll /> },
     { name: 'CustomHook', component: <CustomHook /> },
   ];
-
+  // test
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
