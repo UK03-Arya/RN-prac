@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, TouchableOpacity, ScrollView, SafeAreaView } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, ScrollView } from 'react-native';
 import { useState } from 'react';
 
 import Counter from './components/Counter';
@@ -9,6 +9,7 @@ import UserSearch from './components/UserSearch';
 import Debounce from './components/Debounce';
 import ThrottleScroll from './components/Throtling';
 import CustomHook from './components/CustomHook';
+import GetItemLayout from './components/getItemLayout';
 
 export default function App() {
   const [activeComponent, setActiveComponent] = useState('Menu');
@@ -21,10 +22,11 @@ export default function App() {
     { name: 'Debounce', component: <Debounce /> },
     { name: 'ThrottleScroll', component: <ThrottleScroll /> },
     { name: 'CustomHook', component: <CustomHook /> },
+    { name: 'getItemLayout', component: <GetItemLayout /> },
   ];
   // test
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.headerText}>Practice App</Text>
         {activeComponent !== 'Menu' && (
@@ -52,7 +54,7 @@ export default function App() {
         )}
       </View>
       <StatusBar style="auto" />
-    </SafeAreaView>
+    </View>
   );
 }
 
