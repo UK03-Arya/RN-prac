@@ -10,6 +10,7 @@ import Debounce from './components/Debounce';
 import ThrottleScroll from './components/Throtling';
 import CustomHook from './components/CustomHook';
 import GetItemLayout from './components/getItemLayout';
+import InfiniteScroll from './components/InfiniteScroll';
 
 export default function App() {
   const [activeComponent, setActiveComponent] = useState('Menu');
@@ -23,6 +24,7 @@ export default function App() {
     { name: 'ThrottleScroll', component: <ThrottleScroll /> },
     { name: 'CustomHook', component: <CustomHook /> },
     { name: 'getItemLayout', component: <GetItemLayout /> },
+    { name: 'InfiniteScroll', component: <InfiniteScroll /> },
   ];
   // test
   return (
