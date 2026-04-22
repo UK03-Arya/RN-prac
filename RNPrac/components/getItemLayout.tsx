@@ -18,6 +18,8 @@ const MyList = () => {
         offset: ITEM_HEIGHT * index,
         index
     })
+
+    // test
     return (
         <View>
             <FlatList
