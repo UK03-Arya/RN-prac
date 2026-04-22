@@ -1,48 +1,42 @@
-import React from 'react';
-import { FlatList, View, Text, StyleSheet } from 'react-native';
 
-// Simplest Way
-const DATA = [...Array(10).keys()].map(i => ({
-    id: String(i),
-    title: `Item ${i + 1}`
-}));
+import React from 'react'
+import { View, Text, FlatList } from 'react-native'
 
-const ITEM_HEIGHT = 70; // Fix height define karein
+const ITEM_HEIGHT = 50
 
 const MyList = () => {
-    const renderItem = ({ item }) => (
-        <View style={styles.item}>
-            <Text>{item.title}</Text>
-        </View>
-    );
 
-    // getItemLayout implementation
-    const getItemLayout = (data, index) => ({
-        length: ITEM_HEIGHT,         // Item ki height
-        offset: ITEM_HEIGHT * index, // Item ka distance top se
-        index,                       // Item ka index
-    });
 
+    const DATA = Array.from({ length: 50 }).map((_, index) => ({
+        id: String(index),
+        title: `item ${index}`
+    }))
+
+
+    const getLay = (data, index) => ({
+        length: ITEM_HEIGHT,
+        offset: ITEM_HEIGHT * index,
+        index
+    })
     return (
-        <FlatList
-            data={DATA}
-            renderItem={renderItem}
-            keyExtractor={(item) => item.id}
-            getItemLayout={getItemLayout} // Performance booster
-            initialNumToRender={10}
-            windowSize={5}
-        />
-    );
-};
+        <View>
+            <FlatList
+                data={DATA}
+                keyExtractor={(item) => item.id}
 
-const styles = StyleSheet.create({
-    item: {
-        height: ITEM_HEIGHT,
-        justifyContent: 'center',
-        paddingHorizontal: 20,
-        borderBottomWidth: 1,
-        borderBottomColor: '#ccc',
-    },
-});
+                renderItem={({ item }) => (
+                    <View style={{ height: ITEM_HEIGHT }}>
+                        <Text>
+                            {item.title}
+                        </Text>
+                    </View>
+                )}
+            />
 
-export default MyList;
+            getItemLayout={getLay}
+        </View>
+    )
+}
+
+
+export default MyList
