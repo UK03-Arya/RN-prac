@@ -1,110 +1,89 @@
-import React, { useState, useCallback, useEffect } from 'react';
-import { Text, View, TextInput, Button, FlatList, TouchableOpacity, ActivityIndicator } from 'react-native';
+import React, { useState, useCallback, memo } from 'react';
+import { View, Text, TextInput, TouchableOpacity, FlatList, StyleSheet } from 'react-native';
 
-// --- UTILS (Debounce & Throttle) ---
-const debounce = (fn, delay) => {
-    let timer;
-    return (...args) => {
-        clearTimeout(timer);
-        timer = setTimeout(() => fn(...args), delay);
-    };
-};
+// 1. Optimized Item Component
+const ListItem = memo(({ item, onEdit, onDelete }) => (
+    <View style={styles.itemRow}>
+        <Text style={{ flex: 1 }}>{item.text}</Text>
+        <TouchableOpacity onPress={() => onEdit(item)}>
+            <Text style={{ color: 'blue', marginRight: 15 }}>Edit</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => onDelete(item.id)}>
+            <Text style={{ color: 'red' }}>Delete</Text>
+        </TouchableOpacity>
+    </View>
+));
 
-const throttle = (fn, limit) => {
-    let lastRan;
-    return (...args) => {
-        if (!lastRan || (Date.now() - lastRan >= limit)) {
-            fn(...args);
-            lastRan = Date.now();
-        }
-    };
-};
-
-export default function App() {
+const CRUDApp = () => {
     const [text, setText] = useState('');
-    const [list, setList] = useState([]); // Initial empty list
-    const [filteredList, setFilteredList] = useState([]);
+    const [list, setList] = useState([]);
     const [editId, setEditId] = useState(null);
-    const [loading, setLoading] = useState(true);
 
-    // --- 1. FETCH DATA FROM API ---
-    useEffect(() => {
-        fetch('https://jsonplaceholder.typicode.com/todos?_limit=10')
-            .then(res => res.json())
-            .then(data => {
-                const formattedData = data.map(item => ({ id: item.id.toString(), title: item.title }));
-                setList(formattedData);
-                setFilteredList(formattedData);
-                setLoading(false);
-            });
-    }, []);
+    // --- CRUD LOGIC ---
 
-    // --- 2. SAVE (Create/Update + Throttle) ---
-    const saveTask = () => {
-        if (!text) return;
-        let updated;
+    // CREATE & UPDATE
+    const handleSave = () => {
+        if (!text.trim()) return;
+
         if (editId) {
-            updated = list.map(item => item.id === editId ? { ...item, title: text } : item);
+            // Logic: Update existing item
+            setList(list.map(item => item.id === editId ? { ...item, text } : item));
             setEditId(null);
         } else {
-            updated = [{ id: Date.now().toString(), title: text }, ...list];
+            // Logic: Add new item
+            const newItem = { id: Date.now().toString(), text };
+            setList([...list, newItem]);
         }
-        setList(updated);
-        setFilteredList(updated);
         setText('');
     };
-    const throttledSave = useCallback(throttle(saveTask, 2000), [text, list, editId]);
 
-    // --- 3. SEARCH (Debounce) ---
-    const handleSearch = (val) => {
-        const res = list.filter(item => item.title.toLowerCase().includes(val.toLowerCase()));
-        setFilteredList(res);
+    // DELETE
+    const handleDelete = useCallback((id) => {
+        setList(prev => prev.filter(item => item.id !== id));
+    }, []);
+
+    // EDIT SETUP
+    const handleEdit = (item) => {
+        setText(item.text);
+        setEditId(item.id);
     };
-    const debouncedSearch = useCallback(debounce(handleSearch, 500), [list]);
-
-    // --- 4. DELETE ---
-    const remove = (id) => {
-        const updated = list.filter(item => item.id !== id);
-        setList(updated);
-        setFilteredList(updated);
-    };
-
-    if (loading) return <ActivityIndicator style={{ marginTop: 100 }} />;
 
     return (
-        <View style={{ padding: 40 }}>
-            {/* SEARCH */}
-            <TextInput
-                placeholder="Search (Debounce)..."
-                onChangeText={debouncedSearch}
-                style={{ borderBottomWidth: 1, marginBottom: 20 }}
-            />
+        <View style={styles.container}>
+            <Text style={styles.title}>CRUD Operations</Text>
 
-            {/* INPUT & SAVE */}
-            <TextInput
-                value={text}
-                onChangeText={setText}
-                placeholder="New Task..."
-                style={{ borderBottomWidth: 1 }}
-            />
-            <Button title={editId ? "Update" : "Add"} onPress={throttledSave} />
+            {/* Input Section */}
+            <View style={styles.inputContainer}>
+                <TextInput
+                    style={styles.input}
+                    placeholder="Type here..."
+                    value={text}
+                    onChangeText={setText} // Yahan galti thi, ab fixed hai
+                />
+                <TouchableOpacity onPress={handleSave} style={[styles.btn, { backgroundColor: editId ? '#ffa500' : '#4CAF50' }]}>
+                    <Text style={{ color: 'white' }}>{editId ? 'Update' : 'Add'}</Text>
+                </TouchableOpacity>
+            </View>
 
-            {/* LIST */}
+            {/* List Section */}
             <FlatList
-                data={filteredList}
-                keyExtractor={item => item.id}
+                data={list}
+                keyExtractor={(item) => item.id}
                 renderItem={({ item }) => (
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', padding: 10 }}>
-                        <Text style={{ width: '60%' }}>{item.title}</Text>
-                        <TouchableOpacity onPress={() => { setText(item.title); setEditId(item.id); }}>
-                            <Text style={{ color: 'blue' }}>Edit</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={() => remove(item.id)}>
-                            <Text style={{ color: 'red' }}>Delete</Text>
-                        </TouchableOpacity>
-                    </View>
+                    <ListItem item={item} onEdit={handleEdit} onDelete={handleDelete} />
                 )}
             />
         </View>
     );
-}
+};
+
+const styles = StyleSheet.create({
+    container: { flex: 1, padding: 40, backgroundColor: '#fff' },
+    title: { fontSize: 22, fontWeight: 'bold', marginBottom: 20 },
+    inputContainer: { flexDirection: 'row', marginBottom: 20 },
+    input: { flex: 1, borderWidth: 1, borderColor: '#ccc', padding: 10, borderRadius: 5 },
+    btn: { marginLeft: 10, padding: 10, borderRadius: 5, justifyContent: 'center' },
+    itemRow: { flexDirection: 'row', padding: 15, borderBottomWidth: 1, borderBottomColor: '#eee', alignItems: 'center' }
+});
+
+export default CRUDApp;
