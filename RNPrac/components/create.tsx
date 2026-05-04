@@ -37,3 +37,43 @@ export default function App() {
         </View>
     );
 }
+
+
+// prac
+
+
+// import React,{useState} from 'react'
+// import {View,Text,TextInput,FlatList,Button} from 'react-native'
+
+
+// const AssetExample=()=>{
+// const [list,setList]=useState([])
+// const[text,setText]=useState('')
+
+// const addText=()=>{
+//   if(!text) return
+//   setList([...list,{id:Date.now().toString(),name:text}])
+//   setText('')
+// }
+//   return(
+// <View>
+// <TextInput
+// placeholder='add'
+// value={text}
+// onChangeText={setText}
+// />
+// <Button title='add data' onPress={addText}/>
+// <FlatList
+// data={list}
+// keyExtractor={(item)=>item.id.toString()}
+// renderItem={({item})=>(
+//   <View>
+//   <Text>{item.name}</Text>
+//   </View>
+// )}
+// />
+// </View>
+//   )
+// }
+
+// export default AssetExample
