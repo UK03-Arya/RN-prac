@@ -81,3 +81,6 @@ export default function App() {
     </SafeAreaView>
   );
 }
+
+
+// Infinite Scroll List: API se data fetch karke FlatList mein dikhana aur bottom par naya page load karna.
