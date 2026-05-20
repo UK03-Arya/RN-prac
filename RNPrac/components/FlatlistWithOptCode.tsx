@@ -83,4 +83,4 @@ export default function App() {
 }
 
 
-// Infinite Scroll List: API se data fetch karke FlatList mein dikhana aur bottom par naya page load karna.d
+// Infinite Scroll List: API se data fetch karke FlatList mein dikhana aur bottom par naya page load karna.
